@@ -1,0 +1,8 @@
+# Build and temp outputs
+*.log
+*.tmp
+*.suo
+*.user
+
+# Staging
+scratch/
