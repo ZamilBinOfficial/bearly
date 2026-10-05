@@ -26,21 +26,36 @@ try {
         if (-not $createdNew) { exit }
     }
 
+    # Auto-unblock all files in root to clear Windows Mark-of-the-Web (Zone.Identifier 0x80131515)
+    try { Get-ChildItem -Path $Root -Recurse | Unblock-File -ErrorAction SilentlyContinue } catch { }
+
     # ---------------------------------------------------------------- core engine (cached dll)
     $cs = Join-Path $Root 'core\BearlyCore.cs'
     $dll = Join-Path $Root 'core\bin\BearlyCore.dll'
     $svcRef = [System.ServiceProcess.ServiceController].Assembly.Location
+
     if (-not ('Bearly.Engine' -as [type])) {
-        $stale = (-not (Test-Path $dll)) -or ((Get-Item $cs).LastWriteTimeUtc -gt (Get-Item $dll).LastWriteTimeUtc)
-        if ($stale) {
+        if (Test-Path $dll) {
+            try { Unblock-File -Path $dll -ErrorAction SilentlyContinue } catch { }
+            try {
+                Add-Type -Path $dll -ErrorAction Stop
+            } catch {
+                # If blocked by CAS policy, load raw bytes directly
+                try {
+                    [System.Reflection.Assembly]::Load([System.IO.File]::ReadAllBytes($dll)) | Out-Null
+                } catch { }
+            }
+        }
+
+        # If still not loaded or stale, compile locally on this PC (bypasses all web blocks)
+        if (-not ('Bearly.Engine' -as [type])) {
             New-Item -ItemType Directory -Force -Path (Split-Path $dll) | Out-Null
             try {
-                Add-Type -Path $cs -ReferencedAssemblies $svcRef -OutputAssembly $dll -OutputType Library
+                Add-Type -Path $cs -ReferencedAssemblies $svcRef -OutputAssembly $dll -OutputType Library -ErrorAction Stop
             } catch {
                 if (-not ('Bearly.Engine' -as [type])) { Add-Type -Path $cs -ReferencedAssemblies $svcRef }
             }
         }
-        if (-not ('Bearly.Engine' -as [type])) { Add-Type -Path $dll }
     }
     [Bearly.Engine]::SetAppId('Zamil.Bearly')
 

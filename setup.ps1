@@ -2,6 +2,10 @@ param([string]$Source)
 # One-time setup: builds icons from the logo, validates the app, creates Desktop + Start Menu shortcuts.
 $ErrorActionPreference = 'Stop'
 $Root = $PSScriptRoot
+
+# Unblock all files to clear Windows Mark-of-the-Web
+try { Get-ChildItem -Path $Root -Recurse | Unblock-File -ErrorAction SilentlyContinue } catch { }
+
 $assets = Join-Path $Root 'assets'
 New-Item -ItemType Directory -Force -Path $assets | Out-Null
 Add-Type -AssemblyName System.Drawing

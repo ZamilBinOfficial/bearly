@@ -7,6 +7,9 @@ echo               Bearly - Quick Setup
 echo ========================================================
 echo.
 
+:: Automatically unblock all downloaded files (clears Windows Mark-of-the-Web 0x80131515)
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-ChildItem -Path '%~dp0' -Recurse | Unblock-File -ErrorAction SilentlyContinue" >nul 2>&1
+
 :: Check for Administrator privileges
 net session >nul 2>&1
 if %errorLevel% neq 0 (
