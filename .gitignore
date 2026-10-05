@@ -4,5 +4,6 @@
 *.suo
 *.user
 
-# Staging
+# In-memory build - no binaries needed on disk
+core/bin/
 scratch/
