@@ -248,10 +248,14 @@ try {
             <!-- Done State -->
             <StackPanel x:Name="DoneState" Visibility="Collapsed">
               <StackPanel Orientation="Horizontal">
-                <TextBlock Text="✓" FontSize="11" FontWeight="Bold" Foreground="{StaticResource Green}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                <Viewbox Width="11" Height="11" Margin="0,0,6,0" VerticalAlignment="Center">
+                  <Canvas Width="24" Height="24">
+                    <Path Data="M4,12 L9,17 L20,6" Stroke="{StaticResource Green}" StrokeThickness="2.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
+                  </Canvas>
+                </Viewbox>
                 <TextBlock x:Name="DoneBig" Text="Freed 3.8 GB RAM" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Txt1}" VerticalAlignment="Center"/>
               </StackPanel>
-              <TextBlock x:Name="DoneSub" Text="PC in zero state" FontSize="10.5" Foreground="{StaticResource Txt2}" Margin="14,1,0,0"/>
+              <TextBlock x:Name="DoneSub" Text="PC in zero state" FontSize="10.5" Foreground="{StaticResource Txt2}" Margin="17,2,0,0"/>
             </StackPanel>
           </Grid>
         </Border>
